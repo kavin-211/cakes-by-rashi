@@ -200,7 +200,8 @@ const productsGrid = document.getElementById("products-grid");
 const showMoreBtn = document.getElementById("show-more-btn");
 const filterBtns = document.querySelectorAll(".filter-btn");
 const searchBar = document.querySelector(".search-bar");
-const mobileSearchToggle = document.querySelector(".mobile-search-toggle");
+const searchClear = document.querySelector(".search-clear");
+const mobileSearchToggle = document.querySelector(".search-toggle");
 const searchContainer = document.querySelector(".search-container");
 let searchQuery = "";
 
@@ -221,6 +222,17 @@ function renderCards() {
         );
     }
         
+    // Show "No matching items" message if no results
+    if (filteredProducts.length === 0) {
+        productsGrid.innerHTML = `
+            <div class="no-results">
+                <p>No matching items found</p>
+            </div>
+        `;
+        showMoreBtn.style.display = "none";
+        return;
+    }
+    
     // Slice for pagination
     const productsToShow = filteredProducts.slice(0, visibleItems);
     
@@ -262,8 +274,28 @@ function renderCards() {
 searchBar.addEventListener("input", (e) => {
     searchQuery = e.target.value.toLowerCase().trim();
     visibleItems = 8; // Reset pagination on search
+    
+    // Show/hide clear button
+    if (searchQuery) {
+        searchClear.classList.add("visible");
+    } else {
+        searchClear.classList.remove("visible");
+    }
+    
     renderCards();
 });
+
+// Clear search button
+if (searchClear) {
+    searchClear.addEventListener("click", () => {
+        searchBar.value = "";
+        searchQuery = "";
+        searchClear.classList.remove("visible");
+        visibleItems = 8;
+        renderCards();
+        searchBar.focus();
+    });
+}
 
 // Mobile search toggle
 mobileSearchToggle.addEventListener("click", () => {
