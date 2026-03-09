@@ -1,0 +1,26 @@
+{
+    "name": "Catchy cakes by Rashmi",
+    "short_name": "Catchy Cakes",
+    "description": "Premium homemade cakes for every celebration",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#fff7f5",
+    "theme_color": "#f3a6b2",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "assets/logo.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "assets/logo.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["food", "lifestyle", "shopping"]
+}
+
