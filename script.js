@@ -201,7 +201,8 @@ const showMoreBtn = document.getElementById("show-more-btn");
 const filterBtns = document.querySelectorAll(".filter-btn");
 const searchBar = document.querySelector(".search-bar");
 const searchClear = document.querySelector(".search-clear");
-const mobileSearchToggle = document.querySelector(".search-toggle");
+const searchIcon = document.querySelector(".search-icon");
+const mobileSearchToggle = document.querySelector(".mobile-search-toggle");
 const searchContainer = document.querySelector(".search-container");
 let searchQuery = "";
 
@@ -256,11 +257,11 @@ function renderCards() {
         productsGrid.appendChild(card);
     });
     
-    // Trigger reveal for newly added cards with a small delay
+    // Add revealed class to make cards visible immediately
     setTimeout(() => {
-        const newCards = document.querySelectorAll(".product-card.reveal:not(.active)");
-        newCards.forEach(card => card.classList.add("active"));
-    }, 50);
+        const newCards = document.querySelectorAll(".product-card.reveal");
+        newCards.forEach(card => card.classList.add("revealed"));
+    }, 100);
 
     // Hide/Show 'Show More' button
     if (visibleItems >= filteredProducts.length) {
@@ -271,19 +272,23 @@ function renderCards() {
 }
 
 // --- Search Logic ---
-searchBar.addEventListener("input", (e) => {
-    searchQuery = e.target.value.toLowerCase().trim();
-    visibleItems = 8; // Reset pagination on search
-    
-    // Show/hide clear button
-    if (searchQuery) {
-        searchClear.classList.add("visible");
-    } else {
-        searchClear.classList.remove("visible");
-    }
-    
-    renderCards();
-});
+if (searchBar) {
+    searchBar.addEventListener("input", (e) => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        visibleItems = 8; // Reset pagination on search
+        
+        // Show/hide clear button and search icon based on input
+        if (searchQuery) {
+            searchClear.classList.add("visible");
+            searchIcon.style.display = "none"; // Hide search icon when typing
+        } else {
+            searchClear.classList.remove("visible");
+            searchIcon.style.display = "block"; // Show search icon when empty
+        }
+        
+        renderCards();
+    });
+}
 
 // Clear search button
 if (searchClear) {
@@ -291,6 +296,7 @@ if (searchClear) {
         searchBar.value = "";
         searchQuery = "";
         searchClear.classList.remove("visible");
+        searchIcon.style.display = "block"; // Show search icon again
         visibleItems = 8;
         renderCards();
         searchBar.focus();
@@ -298,12 +304,14 @@ if (searchClear) {
 }
 
 // Mobile search toggle
-mobileSearchToggle.addEventListener("click", () => {
-    searchContainer.classList.toggle("active");
-    if (searchContainer.classList.contains("active")) {
-        searchBar.focus();
-    }
-});
+if (mobileSearchToggle) {
+    mobileSearchToggle.addEventListener("click", () => {
+        searchContainer.classList.toggle("active");
+        if (searchContainer.classList.contains("active")) {
+            searchBar.focus();
+        }
+    });
+}
 
 // --- Filter Logic ---
 filterBtns.forEach(btn => {
@@ -320,10 +328,12 @@ filterBtns.forEach(btn => {
 });
 
 // --- Show More Logic ---
-showMoreBtn.addEventListener("click", () => {
-    visibleItems += 8;
-    renderCards();
-});
+if (showMoreBtn) {
+    showMoreBtn.addEventListener("click", () => {
+        visibleItems += 8;
+        renderCards();
+    });
+}
 
 // --- Product Modal Logic ---
 const modal = document.getElementById("product-modal");
@@ -387,10 +397,15 @@ function closeModal() {
     document.body.style.overflow = "auto";
 }
 
-modalClose.addEventListener("click", closeModal);
-modal.addEventListener("click", (e) => {
-    if (e.target === modal) closeModal();
-});
+if (modalClose) {
+    modalClose.addEventListener("click", closeModal);
+}
+
+if (modal) {
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+    });
+}
 
 // Modal Carousel Controls
 window.moveModalCarousel = function(dir) {
@@ -430,8 +445,13 @@ function moveHeroCarousel(dir) {
     updateHeroCarousel();
 }
 
-heroPrev?.addEventListener("click", () => moveHeroCarousel(-1));
-heroNext?.addEventListener("click", () => moveHeroCarousel(1));
+if (heroPrev) {
+    heroPrev.addEventListener("click", () => moveHeroCarousel(-1));
+}
+
+if (heroNext) {
+    heroNext.addEventListener("click", () => moveHeroCarousel(1));
+}
 
 heroDots.forEach((dot, idx) => {
     dot.addEventListener("click", () => {
@@ -474,12 +494,12 @@ const revealOnScroll = () => {
     const winHeight = window.innerHeight;
     const revealPoint = 150;
     
-    // Intersection Observer is better, but this manual check covers newly injected list items easily
-    const allReveals = document.querySelectorAll(".reveal:not(.active)");
+    // Check for reveals that need to be shown
+    const allReveals = document.querySelectorAll(".reveal:not(.revealed)");
     allReveals.forEach(reveal => {
         const revealTop = reveal.getBoundingClientRect().top;
         if (revealTop < winHeight - revealPoint) {
-            reveal.classList.add("active");
+            reveal.classList.add("revealed");
         }
     });
 
@@ -497,17 +517,19 @@ window.addEventListener("scroll", revealOnScroll);
 
 // --- Form Validation ---
 const contactForm = document.getElementById("contact-form");
-contactForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const name = document.getElementById("name").value.trim();
-    const mobile = document.getElementById("mobile").value.trim();
-    if (name && mobile) {
-        alert("Thanks, " + name + "! Your message has been sent successfully.");
-        contactForm.reset();
-    } else {
-        alert("Please fill in the required fields.");
-    }
-});
+if (contactForm) {
+    contactForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("name").value.trim();
+        const mobile = document.getElementById("mobile").value.trim();
+        if (name && mobile) {
+            alert("Thanks, " + name + "! Your message has been sent successfully.");
+            contactForm.reset();
+        } else {
+            alert("Please fill in the required fields.");
+        }
+    });
+}
 
 // --- Mobile Bottom Nav Active State & Smooth Scroll ---
 const sections = document.querySelectorAll("section");
